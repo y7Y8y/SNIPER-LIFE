@@ -2,6 +2,7 @@
    Une seule fonction de placement (bruit + pentes) pour une végétation crédible et cohérente. */
 
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { terrainHeight, terrainSlope, TERRAIN_SIZE, villageMask } from './terrain.js';
 import { mulberry32 } from '../core/math.js';
 import { makeWoodTexture } from './textures.js';
@@ -65,10 +66,14 @@ export function createVegetation(scene, seed = 42) {
   const canopyMat = makeSwayMaterial(0xffffff, true);
   swayMats.push(grassMat, bushMat, canopyMat);
 
-  // herbe : brins croisés instanciés, légèrement inclinés
-  const grassGeo = new THREE.PlaneGeometry(0.55, 0.8, 1, 2);
-  grassGeo.translate(0, 0.4, 0);
-  const GRASS = 2600;
+  // herbe : touffes croisées (deux plans à 90°) instanciées, légèrement inclinées
+  const blade = () => {
+    const g = new THREE.PlaneGeometry(0.5, 0.85, 1, 2);
+    g.translate(0, 0.42, 0);
+    return g;
+  };
+  const grassGeo = mergeGeometries([blade(), blade().rotateY(Math.PI / 2)]);
+  const GRASS = 4200;
   const grass = new THREE.InstancedMesh(grassGeo, grassMat, GRASS);
   placeInstances(grass, GRASS, rng, {
     test: (x, z, slope, vmask) => slope < 0.5 && vmask > 0.25,
@@ -82,7 +87,7 @@ export function createVegetation(scene, seed = 42) {
   const bushGeo = new THREE.IcosahedronGeometry(0.9, 1);
   bushGeo.scale(1.3, 0.7, 1.3);
   bushGeo.translate(0, 0.4, 0);
-  const BUSH = 130;
+  const BUSH = 170;
   const bushes = new THREE.InstancedMesh(bushGeo, bushMat, BUSH);
   placeInstances(bushes, BUSH, rng, {
     test: (x, z, slope, vmask) => slope < 0.55 && vmask > 0.1,
@@ -99,7 +104,7 @@ export function createVegetation(scene, seed = 42) {
   const barkTex = makeWoodTexture(73);
   if (barkTex) barkTex.repeat.set(1.5, 2);
   const trunkMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1.0, map: barkTex ?? undefined, bumpMap: barkTex ?? undefined, bumpScale: 0.5 });
-  const TREE = 90;
+  const TREE = 115;
   const trunks = new THREE.InstancedMesh(trunkGeo, trunkMat, TREE);
   const canopyGeo = new THREE.IcosahedronGeometry(1.5, 1);
   const BLOBS = 3;

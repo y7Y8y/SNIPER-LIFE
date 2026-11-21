@@ -152,14 +152,16 @@ export function animateHumanoid(h, dt, speed01, stance, dyingT = -1) {
   }
 
   const hipsTarget = STANCE_HIP[stance] ?? 0.95;
-  h.hips.position.y += (hipsTarget - h.hips.position.y) * Math.min(1, dt * 8);
+  const base = h._hipBase ?? hipsTarget;
+  h._hipBase = base + (hipsTarget - base) * Math.min(1, dt * 8);
 
   h.phase += dt * (2.2 + speed01 * 7.0);
   const swing = Math.sin(h.phase * 2) * (0.18 + speed01 * 0.75);
-  const lift = Math.abs(Math.cos(h.phase * 2)) * speed01 * 0.25;
+  const lift = Math.abs(Math.cos(h.phase * 2)) * speed01 * 0.07;
 
   if (stance === 2) {
-    h.hips.position.y += (0.22 - h.hips.position.y) * Math.min(1, dt * 6);
+    h._hipBase = 0.22;
+    h.hips.position.y = 0.22;
     h.torso.rotation.x = (Math.PI / 2) * 0.86;
     h.group.rotation.x = 0;
     h.legL.rotation.x = 0.2; h.legR.rotation.x = 0.05;
@@ -177,7 +179,7 @@ export function animateHumanoid(h, dt, speed01, stance, dyingT = -1) {
   const crouchMul = stance === 1 ? 1.5 : 1;
   setLower(h.legL, Math.max(0.04, -swing + Math.abs(swing) * 0.3) * (0.5 + speed01 * 0.7) * crouchMul);
   setLower(h.legR, Math.max(0.04, swing + Math.abs(swing) * 0.3) * (0.5 + speed01 * 0.7) * crouchMul);
-  h.hips.position.y += lift * (stance === 1 ? 0.3 : 1);
+  h.hips.position.y = h._hipBase + lift * (stance === 1 ? 0.4 : 1);
   h.armL.rotation.x = -swing * 0.7;
   setLower(h.armL, -0.28 - Math.abs(swing) * 0.2);
   if (h.rifle) {

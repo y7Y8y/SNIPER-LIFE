@@ -33,15 +33,15 @@ export function terrainSlope(x, z) {
 }
 
 export function createTerrain(layout) {
-  const segs = 110;
+  const segs = 140;
   const geo = new THREE.PlaneGeometry(TERRAIN_SIZE, TERRAIN_SIZE, segs, segs);
   geo.rotateX(-Math.PI / 2);
   const pos = geo.attributes.position;
   const colors = new Float32Array(pos.count * 3);
 
-  const grassA = new THREE.Color(0x4a5c38);
-  const grassB = new THREE.Color(0x5d6b41);
-  const dry = new THREE.Color(0x7a7448);
+  const grassA = new THREE.Color(0x48603a);
+  const grassB = new THREE.Color(0x66744a);
+  const dry = new THREE.Color(0x86784a);
   const dirt = new THREE.Color(0x5b4a35);
   const rock = new THREE.Color(0x6b6a5e);
   const c = new THREE.Color();

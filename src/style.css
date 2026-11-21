@@ -174,10 +174,12 @@ button:disabled { opacity: 0.35; cursor: default; }
 #hud.hidden { display: none; }
 
 .hud-objective {
-  position: absolute; top: max(10px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
-  text-align: center; color: var(--bone); font-size: 12.5px; letter-spacing: 0.1em;
+  position: absolute;
+  left: max(12px, env(safe-area-inset-left));
+  top: calc(max(40px, env(safe-area-inset-top) + 32px) + 118px);
+  text-align: left; color: var(--bone); font-size: 12.5px; letter-spacing: 0.1em;
   background: rgba(13, 18, 13, 0.55); border: 1px solid rgba(138, 154, 111, 0.25);
-  padding: 5px 14px; max-width: 60vw;
+  padding: 5px 12px; max-width: 300px;
 }
 .hud-objective .kicker { font-size: 9px; display: block; color: var(--amber); margin-bottom: 2px; }
 
@@ -253,15 +255,16 @@ touch-btn, .touch-btn {
 
 /* Écrans tactiles courts (iPhone paysage) : personne ne marche pas sous les pouces */
 @media (pointer: coarse) {
-  .hud-left { top: 164px; bottom: auto; }
-  .hud-right { bottom: 128px; }
+  .hud-left { bottom: 12px; }
+  .hud-right { bottom: 108px; }
   .hud-right .ammo { font-size: 16px; }
   .stance-glyph { display: none; }
-  .toasts { bottom: 120px; }
+  .toasts { bottom: 96px; left: 66%; transform: translateX(-50%); }
   #minimap { width: 86px; height: 86px; }
-  .hud-objective { font-size: 10.5px; max-width: 52vw; }
-  .toast { font-size: 10.5px; max-width: 62vw; }
-  #alert-eye { top: max(8px, env(safe-area-inset-top)); }
+  .hud-objective { top: calc(max(40px, env(safe-area-inset-top) + 32px) + 94px); font-size: 10.5px; max-width: 240px; }
+  #alert-eye { top: 64px; right: 16px; }
+  #alert-eye .eye { width: 26px; }
+  .toast { font-size: 10.5px; max-width: 54vw; }
 }
 
 #btn-fire { width: 64px; height: 64px; right: max(14px, env(safe-area-inset-right)); bottom: max(40px, calc(env(safe-area-inset-bottom) + 34px)); border-width: 2px; font-size: 10.5px; }
