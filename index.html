@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="SHADOWLINE" />
+    <link rel="apple-touch-icon" href="/SNIPER-LIFE/icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="/SNIPER-LIFE/icons/favicon.png" />
+    <title>SHADOWLINE — phase 0</title>
+  </head>
+  <body>
+    <canvas id="game-canvas"></canvas>
+
+    <div id="hud" class="hidden" aria-live="polite">
+      <div id="fps-meter">— fps</div>
+      <div id="quality-meter">qualité —</div>
+      <div id="wind-instrument">
+        <span id="wind-direction">—</span>
+        <span id="wind-speed">— m/s</span>
+      </div>
+      <div id="touch-controls">
+        <div id="stick-container">
+          <div id="stick-base"></div>
+          <div id="stick-knob"></div>
+        </div>
+        <div id="buttons">
+          <button id="btn-posture" class="pill">POSTURE</button>
+          <button id="btn-scope" class="pill">LUNETTE</button>
+          <button id="btn-breath" class="pill">APNÉE</button>
+          <button id="btn-fire" class="pill fire">TIR</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="scope-overlay" class="hidden">
+      <div id="scope-vignette"></div>
+      <div id="scope-reticle">
+        <div id="reticle-cross"></div>
+        <div id="reticle-drop"></div>
+      </div>
+      <div id="scope-glare" class="hidden"></div>
+    </div>
+
+    <div id="hint" class="hidden" aria-live="polite"></div>
+
+    <div id="portrait-warning" class="overlay-screen">
+      <p>Tourne ton téléphone<br />Jeu en paysage uniquement</p>
+    </div>
+
+    <div id="touch-to-start" class="overlay-screen">
+      <h1>SHADOWLINE</h1>
+      <p>Toucher pour commencer</p>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

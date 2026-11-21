@@ -1,0 +1,21 @@
+{
+  "name": "shadowline",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "description": "SHADOWLINE — sniper tactique et narratif, PWA (phase 0)",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "node --test \"tests/*.test.ts\""
+  },
+  "dependencies": {
+    "@babylonjs/core": "^8.54.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^7.1.14",
+    "vite-plugin-pwa": "^1.1.0"
+  }
+}
