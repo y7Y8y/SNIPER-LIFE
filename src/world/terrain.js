@@ -3,6 +3,7 @@
 
 import * as THREE from 'three';
 import { fbm2, smoothstep, clamp, lerp } from '../core/math.js';
+import { makeGroundTexture } from './textures.js';
 
 export const TERRAIN_SIZE = 260;
 export const VILLAGE_CENTER = { x: 0, z: 0 };
@@ -78,8 +79,13 @@ export function createTerrain(layout) {
   geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   geo.computeVertexNormals();
 
+  const groundTex = makeGroundTexture();
+  if (groundTex) groundTex.repeat.set(22, 22);
   const mat = new THREE.MeshStandardMaterial({
     vertexColors: true,
+    map: groundTex ?? undefined,
+    bumpMap: groundTex ?? undefined,
+    bumpScale: 0.35,
     roughness: 1.0,
     metalness: 0.0
   });

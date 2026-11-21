@@ -297,6 +297,7 @@ export class Mission {
     this.hud.updateCompass(this.player.yaw);
     this.hud.setScope(this.player.scoped, this.player.zoom, this.player.breath, this.player.holdingBreath);
     this.hud.renderScope(this.player, dt);
+    this.hud.renderMinimap(this);
 
     // anneau d'extraction pulse
     this.ringPulse += dt;

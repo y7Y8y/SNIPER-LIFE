@@ -192,7 +192,7 @@ button:disabled { opacity: 0.35; cursor: default; }
 .compass .tick.major span { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); font-size: 9px; color: var(--moss-light); letter-spacing: 0.1em; }
 
 .hud-left { position: absolute; left: max(12px, env(safe-area-inset-left)); bottom: max(12px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 6px; }
-.meter { width: 130px; }
+.meter { width: 108px; }
 .meter .label { font-size: 9px; letter-spacing: 0.22em; color: var(--ghost); margin-bottom: 3px; text-transform: uppercase; }
 .meter .bar { height: 4px; background: rgba(212, 216, 195, 0.12); position: relative; }
 .meter .bar i { position: absolute; inset: 0; transform-origin: left; background: var(--moss-light); }
@@ -202,7 +202,13 @@ button:disabled { opacity: 0.35; cursor: default; }
 .hud-right { position: absolute; right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); text-align: right; font-size: 12px; color: var(--ghost); letter-spacing: 0.12em; }
 .hud-right .ammo { font-size: 20px; color: var(--bone); font-family: var(--font-ui); letter-spacing: 0.1em; }
 
-.stance-glyph { position: absolute; left: max(12px, env(safe-area-inset-left)); top: max(42px, calc(env(safe-area-inset-top) + 36px)); font-family: var(--font-ui); font-size: 11px; letter-spacing: 0.24em; color: var(--ghost); text-transform: uppercase; }
+.stance-glyph { position: absolute; left: max(12px, env(safe-area-inset-left)); top: max(14px, calc(env(safe-area-inset-top) + 8px)); font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.24em; color: var(--ghost); text-transform: uppercase; }
+
+#minimap {
+  position: absolute; left: max(12px, env(safe-area-inset-left)); top: max(40px, calc(env(safe-area-inset-top) + 32px));
+  width: 110px; height: 110px;
+  background: rgba(10, 14, 10, 0.55); border: 1px solid rgba(138, 154, 111, 0.3);
+}
 
 #alert-eye {
   position: absolute; top: max(8px, env(safe-area-inset-top)); right: max(14px, env(safe-area-inset-right));
@@ -245,20 +251,25 @@ touch-btn, .touch-btn {
 .touch-btn:active, .touch-btn.active { background: rgba(85, 101, 63, 0.7); border-color: var(--amber); }
 #touch-layer .touch-btn, #touch-layer .stick-base, #touch-layer .stick-nub { touch-action: none; }
 
-/* Écrans tactiles courts (iPhone paysage) : la vista ne marche pas sous les pouces */
+/* Écrans tactiles courts (iPhone paysage) : personne ne marche pas sous les pouces */
 @media (pointer: coarse) {
-  .hud-left { top: 84px; bottom: auto; }
-  .hud-right { bottom: 150px; }
+  .hud-left { top: 164px; bottom: auto; }
+  .hud-right { bottom: 128px; }
+  .hud-right .ammo { font-size: 16px; }
   .stance-glyph { display: none; }
-  .toasts { bottom: 128px; }
+  .toasts { bottom: 120px; }
+  #minimap { width: 86px; height: 86px; }
+  .hud-objective { font-size: 10.5px; max-width: 52vw; }
+  .toast { font-size: 10.5px; max-width: 62vw; }
+  #alert-eye { top: max(8px, env(safe-area-inset-top)); }
 }
 
-#btn-fire { width: 86px; height: 86px; right: max(16px, env(safe-area-inset-right)); bottom: max(44px, calc(env(safe-area-inset-bottom) + 40px)); border-width: 2px; font-size: 12px; }
-#btn-scope { width: 62px; height: 62px; right: max(116px, calc(env(safe-area-inset-right) + 100px)); bottom: max(20px, calc(env(safe-area-inset-bottom) + 16px)); }
-#btn-stance { width: 62px; height: 62px; right: max(116px, calc(env(safe-area-inset-right) + 100px)); bottom: max(92px, calc(env(safe-area-inset-bottom) + 88px)); }
-#btn-breath { width: 62px; height: 62px; right: max(186px, calc(env(safe-area-inset-right) + 170px)); bottom: max(44px, calc(env(safe-area-inset-bottom) + 40px)); }
-#btn-camera { width: 52px; height: 52px; right: max(16px, env(safe-area-inset-right)); top: max(14px, calc(env(safe-area-inset-top) + 60px)); }
-#btn-pause { width: 52px; height: 52px; right: max(76px, calc(env(safe-area-inset-right) + 60px)); top: max(14px, calc(env(safe-area-inset-top) + 60px)); }
+#btn-fire { width: 64px; height: 64px; right: max(14px, env(safe-area-inset-right)); bottom: max(40px, calc(env(safe-area-inset-bottom) + 34px)); border-width: 2px; font-size: 10.5px; }
+#btn-scope { width: 50px; height: 50px; right: max(90px, calc(env(safe-area-inset-right) + 76px)); bottom: max(18px, calc(env(safe-area-inset-bottom) + 12px)); }
+#btn-stance { width: 50px; height: 50px; right: max(90px, calc(env(safe-area-inset-right) + 76px)); bottom: max(76px, calc(env(safe-area-inset-bottom) + 70px)); }
+#btn-breath { width: 50px; height: 50px; right: max(148px, calc(env(safe-area-inset-right) + 134px)); bottom: max(40px, calc(env(safe-area-inset-bottom) + 34px)); }
+#btn-camera { width: 44px; height: 44px; right: max(14px, env(safe-area-inset-right)); top: max(12px, calc(env(safe-area-inset-top) + 6px)); font-size: 9.5px; }
+#btn-pause { width: 44px; height: 44px; right: max(66px, calc(env(safe-area-inset-right) + 52px)); top: max(12px, calc(env(safe-area-inset-top) + 6px)); font-size: 9.5px; }
 
 /* ---------- Rotation portrait ---------- */
 #rotate-overlay {

@@ -132,8 +132,12 @@ export class InputController {
       }
       if (e.pointerId === this.pointerId) {
         this.pointerId = null;
-        // tap bref et immobile (zone de regard) pendant la lunette : tir
-        if (!this._moved && performance.now() - this._downT < 260 && this.tapFireCheck && this.tapFireCheck()) {
+        // tap bref et immobile au centre de l'écran, lunette seule : tir
+        const inTapZone = this._downX > window.innerWidth * 0.25
+          && this._downX < window.innerWidth * 0.75
+          && this._downY > window.innerHeight * 0.25
+          && this._downY < window.innerHeight * 0.8;
+        if (!this._moved && performance.now() - this._downT < 260 && inTapZone && this.tapFireCheck && this.tapFireCheck()) {
           this.state.fire = true;
         }
       }

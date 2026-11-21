@@ -4,16 +4,32 @@
 import * as THREE from 'three';
 import { terrainHeight } from './terrain.js';
 import { mulberry32 } from '../core/math.js';
+import { makePlasterTexture, makeWoodTexture, makeRoofTexture, makeMetalTexture } from './textures.js';
+
+const _plaster = makePlasterTexture();
+const _wood = makeWoodTexture();
+const _roof = makeRoofTexture();
+const _metal = makeMetalTexture();
+
+function textured(mat, tex, repeat, bump = 0.5) {
+  if (tex) {
+    tex.repeat.set(repeat, repeat);
+    mat.map = tex;
+    mat.bumpMap = tex;
+    mat.bumpScale = bump;
+  }
+  return mat;
+}
 
 const MAT = {
-  wallCream: new THREE.MeshStandardMaterial({ color: 0xb0a68c, roughness: 0.95 }),
-  wallStone: new THREE.MeshStandardMaterial({ color: 0x8a857a, roughness: 1.0 }),
-  wallWood: new THREE.MeshStandardMaterial({ color: 0x6e5a40, roughness: 0.9 }),
-  roofTile: new THREE.MeshStandardMaterial({ color: 0x6b3b2e, roughness: 0.85 }),
+  wallCream: textured(new THREE.MeshStandardMaterial({ color: 0xb0a68c, roughness: 0.95 }), _plaster, 2.2, 0.6),
+  wallStone: textured(new THREE.MeshStandardMaterial({ color: 0x8a857a, roughness: 1.0 }), _plaster, 2.6, 0.7),
+  wallWood: textured(new THREE.MeshStandardMaterial({ color: 0x6e5a40, roughness: 0.9 }), _wood, 2, 0.5),
+  roofTile: textured(new THREE.MeshStandardMaterial({ color: 0x8a5a46, roughness: 0.85 }), _roof, 3, 0.6),
   roofSlate: new THREE.MeshStandardMaterial({ color: 0x4a4f52, roughness: 0.85 }),
-  roofThatch: new THREE.MeshStandardMaterial({ color: 0x8a7239, roughness: 1.0 }),
-  wood: new THREE.MeshStandardMaterial({ color: 0x54432e, roughness: 0.95 }),
-  metal: new THREE.MeshStandardMaterial({ color: 0x59605e, roughness: 0.5, metalness: 0.6 }),
+  roofThatch: textured(new THREE.MeshStandardMaterial({ color: 0x8a7239, roughness: 1.0 }), _wood, 3.5, 0.7),
+  wood: textured(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.95 }), _wood, 1.4, 0.6),
+  metal: textured(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0.6 }), _metal, 1.2, 0.4),
   glass: new THREE.MeshStandardMaterial({ color: 0x2c3a40, roughness: 0.25, metalness: 0.4 }),
   tire: new THREE.MeshStandardMaterial({ color: 0x1d1f1d, roughness: 1.0 })
 };

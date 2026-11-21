@@ -4,6 +4,7 @@
 import * as THREE from 'three';
 import { terrainHeight, terrainSlope, TERRAIN_SIZE, villageMask } from './terrain.js';
 import { mulberry32 } from '../core/math.js';
+import { makeWoodTexture } from './textures.js';
 
 const WIND_CHUNK = `
 uniform float uTime;
@@ -95,7 +96,9 @@ export function createVegetation(scene, seed = 42) {
   // arbres : tronc + houppier en 3 masses décalées (jamais un simple cône)
   const trunkGeo = new THREE.CylinderGeometry(0.16, 0.26, 3.2, 6);
   trunkGeo.translate(0, 1.6, 0);
-  const trunkMat = new THREE.MeshStandardMaterial({ color: 0x4d3c28, roughness: 1.0 });
+  const barkTex = makeWoodTexture(73);
+  if (barkTex) barkTex.repeat.set(1.5, 2);
+  const trunkMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1.0, map: barkTex ?? undefined, bumpMap: barkTex ?? undefined, bumpScale: 0.5 });
   const TREE = 90;
   const trunks = new THREE.InstancedMesh(trunkGeo, trunkMat, TREE);
   const canopyGeo = new THREE.IcosahedronGeometry(1.5, 1);

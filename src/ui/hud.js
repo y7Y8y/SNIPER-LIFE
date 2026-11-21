@@ -13,6 +13,7 @@ export class HUD {
     this.el.id = 'hud';
     this.el.innerHTML = `
       <div class="hud-objective"><span class="kicker">Objectif</span><span id="obj-text">—</span></div>
+      <canvas id="minimap" width="110" height="110"></canvas>
       <div class="compass"><div class="compass-strip" id="compass-strip"></div></div>
       <div class="stance-glyph" id="stance-glyph">Debout</div>
       <div id="alert-eye"><span>Menace</span><div class="eye"><i id="eye-fill"></i></div></div>
@@ -31,6 +32,7 @@ export class HUD {
 
     this.scopeCanvas = document.getElementById('scope-fx');
     this.scopeCtx = this.scopeCanvas.getContext('2d');
+    this.miniCtx = document.getElementById('minimap')?.getContext('2d');
     this.mildotSpacing = 44; // px entre mildots a 8x
 
     this._buildCompass();
@@ -118,6 +120,51 @@ export class HUD {
 
   setAmmo(shown) {
     this.el.querySelector('#ammo').textContent = shown;
+  }
+
+  /* minimap tactique : nord en haut, 1 px = 1.13 m, nous au centre */
+  renderMinimap(mission) {
+    const ctx = this.miniCtx;
+    if (!ctx) return;
+    const S = 110, s = S / 124, half = S / 2;
+    const px = this.player.x, pz = this.player.z;
+    const mx = (wx) => half + (wx - px) * s;
+    const mz = (wz) => half + (wz - pz) * s;
+    ctx.clearRect(0, 0, S, S);
+
+    for (const o of mission.occluders ?? []) {
+      ctx.fillStyle = 'rgba(190, 196, 170, 0.14)';
+      ctx.fillRect(mx(o.minX), mz(o.minZ), (o.maxX - o.minX) * s, (o.maxZ - o.minZ) * s);
+    }
+    const o = mission.currentObjective?.();
+    if (o?.pos) {
+      ctx.strokeStyle = 'rgba(217, 154, 43, 0.9)';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(mx(o.pos.x) - 3, mz(o.pos.z) - 3, 6, 6);
+    }
+    if (mission.def?.extraction) {
+      ctx.strokeStyle = 'rgba(217, 154, 43, 0.5)';
+      ctx.beginPath();
+      ctx.arc(mx(mission.def.extraction.x), mz(mission.def.extraction.z), mission.def.extraction.r * s, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    for (const g of mission.guards ?? []) {
+      if (g.dead) continue;
+      ctx.fillStyle = g.alert > 0.85 ? 'rgba(196, 74, 53, 0.95)'
+        : g.alert > 0.3 ? 'rgba(217, 154, 43, 0.8)' : 'rgba(150, 164, 110, 0.6)';
+      ctx.beginPath();
+      ctx.arc(mx(g.x), mz(g.z), 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.save();
+    ctx.translate(half, half);
+    ctx.rotate(Math.PI - this.player.yaw);
+    ctx.fillStyle = '#f2e8c9';
+    ctx.beginPath();
+    ctx.moveTo(0, -5); ctx.lineTo(3.6, 4); ctx.lineTo(0, 2); ctx.lineTo(-3.6, 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
   }
 
   setWeather(label) {
