@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="SNIPER-LIFE" />
+  <meta name="theme-color" content="#0d120d" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icons/icon-180.png" />
+  <link rel="icon" href="./icons/icon-180.png" />
+  <title>SNIPER-LIFE</title>
+</head>
+<body>
+  <div id="app">
+    <canvas id="gl" width="1280" height="720"></canvas>
+    <canvas id="scope-fx"></canvas>
+    <div id="grain"></div>
+    <div id="vignette"></div>
+    <div id="rotate-overlay">
+      <div class="rotate-icon">↻</div>
+      <p>Tournez votre appareil en paysage</p>
+    </div>
+    <div id="ui"></div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+  <script>
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
