@@ -79,6 +79,7 @@ export class Mission {
 
     const playerModel = createHumanoid({ uniform: 0x3f4636, pants: 0x38402c, hat: 0x3f4636, rifle: true });
     this.player.model3p = playerModel.group;
+    this.player.humanoid = playerModel;
     scene.add(playerModel.group);
 
 
@@ -268,6 +269,7 @@ export class Mission {
     for (const g of this.guards) g.update(dt, ctx);
     for (const c of this.civilians) c.update(dt, ctx);
     this.player.update(dt, input, { colliders: this.colliders }, this, this.game.audio);
+    this.separateActors();
     this.bullets.update(dt, {
       player: this.player, guards: this.guards, civilians: this.civilians,
       occluders: this.occluders, audio: this.game.audio, camera: this.camera, mission: this
@@ -302,6 +304,26 @@ export class Mission {
 
     if (this.def.noAlarmLimit && this.alarmRaised) {
       this.fail('L’alarme a sonné. La leçon est ratée.');
+    }
+  }
+
+  separateActors() {
+    const alive = [
+      this.player,
+      ...this.guards.filter(g => !g.dead),
+      ...this.civilians.filter(c => !c.dead)
+    ];
+    for (let i = 0; i < alive.length; i++) {
+      for (let j = i + 1; j < alive.length; j++) {
+        const a = alive[i], b = alive[j];
+        const dx = b.x - a.x, dz = b.z - a.z;
+        const d = Math.hypot(dx, dz);
+        if (d > 0.85 || d < 0.0001) continue;
+        const push = (0.85 - d) * 0.5;
+        const ux = dx / d, uz = dz / d;
+        a.x -= ux * push; a.z -= uz * push;
+        b.x += ux * push; b.z += uz * push;
+      }
     }
   }
 

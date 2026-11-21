@@ -227,7 +227,7 @@ button:disabled { opacity: 0.35; cursor: default; }
 /* ---------- Contrôles tactiles ---------- */
 #touch-layer { position: absolute; inset: 0; z-index: 9; pointer-events: none; }
 #touch-layer.hidden { display: none; }
-#touch-layer .stick-zone { position: absolute; left: 0; bottom: 0; width: 38%; height: 62%; pointer-events: auto; }
+#touch-layer .stick-zone { position: absolute; left: 0; bottom: 0; width: 38%; height: 62%; pointer-events: none; }
 #touch-layer .stick-base, #touch-layer .stick-nub {
   position: absolute; border-radius: 50%; pointer-events: none; opacity: 0.5;
 }
@@ -243,6 +243,15 @@ touch-btn, .touch-btn {
 }
 .touch-btn.round { border-radius: 50%; }
 .touch-btn:active, .touch-btn.active { background: rgba(85, 101, 63, 0.7); border-color: var(--amber); }
+#touch-layer .touch-btn, #touch-layer .stick-base, #touch-layer .stick-nub { touch-action: none; }
+
+/* Écrans tactiles courts (iPhone paysage) : la vista ne marche pas sous les pouces */
+@media (pointer: coarse) {
+  .hud-left { top: 84px; bottom: auto; }
+  .hud-right { bottom: 150px; }
+  .stance-glyph { display: none; }
+  .toasts { bottom: 128px; }
+}
 
 #btn-fire { width: 86px; height: 86px; right: max(16px, env(safe-area-inset-right)); bottom: max(44px, calc(env(safe-area-inset-bottom) + 40px)); border-width: 2px; font-size: 12px; }
 #btn-scope { width: 62px; height: 62px; right: max(116px, calc(env(safe-area-inset-right) + 100px)); bottom: max(20px, calc(env(safe-area-inset-bottom) + 16px)); }
@@ -271,3 +280,27 @@ touch-btn, .touch-btn {
 #loading { position: absolute; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; background: var(--night); }
 #loading .wordmark { font-size: 22px; opacity: 0.7; animation: pulse 1.4s ease-in-out infinite; }
 @keyframes pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.85; } }
+
+/* ---------- Paysage court (téléphones) : hiérarchie dense, zéro chevauchement ---------- */
+@media (max-height: 440px) {
+  .screen { padding: 12px 16px; }
+  .title-block { gap: 6px; }
+  .wordmark.lg { font-size: 26px; }
+  .subtitle { font-size: 11px; }
+  .menu-actions { gap: 8px; margin-top: 1.2vh; }
+  button { padding: 9px 16px; font-size: 12px; letter-spacing: 0.14em; }
+  .dossier { padding: 12px 14px; gap: 7px; max-height: 94%; }
+  .dossier h2 { font-size: 15px; }
+  .dossier .brief { font-size: 12.5px; line-height: 1.45; }
+  .dossier .objectives li { font-size: 11px; }
+  .dossier .meta { gap: 10px; font-size: 10px; }
+  .typewriter { min-height: 2.6em; }
+  .choice-card { padding: 10px 12px; }
+  .choice-card h3 { font-size: 12px; }
+  .choice-card p { font-size: 10.5px; }
+  .stats-grid { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 6px; }
+  .stat { padding: 6px; }
+  .stat b { font-size: 16px; }
+  .stat span { font-size: 8.5px; }
+  .screen > * { margin-block: 0; }
+}

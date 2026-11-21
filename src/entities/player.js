@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 import { terrainHeight } from '../world/terrain.js';
 import { clamp, dampf, fbm2, angleDelta } from '../core/math.js';
-import { STANCE_HEIGHT } from './character.js';
+import { STANCE_HEIGHT, animateHumanoid } from './character.js';
 
 const SPEED = { 0: 3.4, 1: 1.7, 2: 0.75 };
 const VIS_MULT = { 0: 1.0, 1: 0.55, 2: 0.22 };
@@ -41,6 +41,7 @@ export class Player {
 
     // modele 3e personne (main armee visible en TPS)
     this.model3p = null;
+    this.humanoid = null;
   }
 
   get eyeHeight() {
@@ -115,7 +116,7 @@ export class Player {
     if (this.stress > 0.85) spd *= 0.9;
 
     const forward = new THREE.Vector3(Math.sin(this.yaw), 0, Math.cos(this.yaw));
-    const right = new THREE.Vector3(forward.z, 0, -forward.x);
+    const right = new THREE.Vector3(-forward.z, 0, forward.x);
     const move = new THREE.Vector3()
       .addScaledVector(forward, input.move.y)
       .addScaledVector(right, input.move.x);
@@ -234,7 +235,7 @@ export class Player {
   muzzleWorld(dir) {
     const p = new THREE.Vector3(this.x, this.camera.position.y ?? terrainHeight(this.x, this.z) + 1.6, this.z);
     // en FPS, sortie approximative du canon (legerement devant-droite)
-    const right = new THREE.Vector3(dir.z, 0, -dir.x).normalize();
+    const right = new THREE.Vector3(-dir.z, 0, dir.x).normalize();
     p.addScaledVector(dir, 0.6);
     p.addScaledVector(right, 0.15);
     return p;
@@ -265,6 +266,13 @@ export class Player {
     if (this.alive === false) {
       // chute au sol
       this._eyeH = dampf(this._eyeH ?? 1.7, 0.3, 3, dt);
+    }
+
+    if (this.humanoid) {
+      animateHumanoid(this.humanoid, dt, this.currentSpeed01, this.stance);
+      this.humanoid.group.rotation.y = this.yaw + Math.PI;
+      this.humanoid.group.position.y = groundY;
+      if (this.humanoid.torso) this.humanoid.torso.rotation.y = this.scoped ? (this.yaw - this.camera.rotation.y + Math.PI) * 0.2 : 0;
     }
 
     if (this.camMode === 'fps') {

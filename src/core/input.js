@@ -38,6 +38,11 @@ export class InputController {
     this.stickOrigin = { x: 0, y: 0 };
     this.sensitivity = 0.0026;
     this.onWheel = null;
+    this.tapFireCheck = null;
+    this._downT = 0;
+    this._downX = 0;
+    this._downY = 0;
+    this._moved = false;
     this._install();
   }
 
@@ -94,6 +99,9 @@ export class InputController {
       } else if (this.pointerId === null) {
         this.pointerId = e.pointerId;
         this.lastX = x; this.lastY = y;
+        this._downT = performance.now();
+        this._downX = x; this._downY = y;
+        this._moved = false;
       }
       e.preventDefault();
     });
@@ -112,6 +120,7 @@ export class InputController {
         this.state.look.dx += (e.clientX - this.lastX) * this.sensitivity;
         this.state.look.dy += (e.clientY - this.lastY) * this.sensitivity;
         this.lastX = e.clientX; this.lastY = e.clientY;
+        if (Math.hypot(e.clientX - this._downX, e.clientY - this._downY) > 14) this._moved = true;
         e.preventDefault();
       }
     });
@@ -121,7 +130,13 @@ export class InputController {
         this.state.move.x = 0; this.state.move.y = 0;
         this._hideStick();
       }
-      if (e.pointerId === this.pointerId) this.pointerId = null;
+      if (e.pointerId === this.pointerId) {
+        this.pointerId = null;
+        // tap bref et immobile (zone de regard) pendant la lunette : tir
+        if (!this._moved && performance.now() - this._downT < 260 && this.tapFireCheck && this.tapFireCheck()) {
+          this.state.fire = true;
+        }
+      }
     };
     el.addEventListener('pointerup', endPointer);
     el.addEventListener('pointercancel', endPointer);

@@ -46,6 +46,7 @@ class Game {
     this.resize();
 
     this.input = new InputController(this.canvas, this.inputState);
+    this.input.tapFireCheck = () => this.mission?.player?.scoped === true;
     this.input.onWheel = (dir) => {
       if (this.mission && this.playerScoped()) {
         this.mission.player.zoom = Math.min(1, Math.max(0, this.mission.player.zoom - dir * 0.25));

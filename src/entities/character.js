@@ -6,13 +6,31 @@ import * as THREE from 'three';
 const SKIN = new THREE.MeshStandardMaterial({ color: 0xb08a6a, roughness: 0.75 });
 
 function limb(len, r, mat) {
-  const g = new THREE.Group();
-  const geo = new THREE.CapsuleGeometry(r, Math.max(0.02, len - r * 2), 3, 8);
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.position.y = -len / 2;
-  mesh.castShadow = true;
-  g.add(mesh);
-  return g;
+  const root = new THREE.Group();
+  const upperLen = len * 0.52;
+  const lowerLen = len * 0.5;
+  const upperGeo = new THREE.CapsuleGeometry(r, Math.max(0.02, upperLen - r * 2), 3, 8);
+  const upperMesh = new THREE.Mesh(upperGeo, mat);
+  upperMesh.position.y = -upperLen / 2;
+  upperMesh.castShadow = true;
+  const upper = new THREE.Group();
+  upper.add(upperMesh);
+  root.add(upper);
+  const lower = new THREE.Group();
+  lower.position.y = -upperLen;
+  const lowerGeo = new THREE.CapsuleGeometry(r * 0.88, Math.max(0.02, lowerLen - r), 3, 8);
+  const lowerMesh = new THREE.Mesh(lowerGeo, mat);
+  lowerMesh.position.y = -lowerLen / 2 + r * 0.25;
+  lowerMesh.castShadow = true;
+  lower.add(lowerMesh);
+  upper.add(lower);
+  root.userData.upper = upper;
+  root.userData.lower = lower;
+  return root;
+}
+
+function setLower(limbRef, bend) {
+  if (limbRef && limbRef.userData.lower) limbRef.userData.lower.rotation.x = bend;
 }
 
 export function createHumanoid(cfg = {}) {
@@ -126,6 +144,10 @@ export function animateHumanoid(h, dt, speed01, stance, dyingT = -1) {
     h.armR.rotation.x = 0.6 * t;
     h.legL.rotation.x = 0.2 * t;
     h.legR.rotation.x = 0.1 * t;
+    setLower(h.legL, 0.5 * t);
+    setLower(h.legR, 0.3 * t);
+    setLower(h.armL, -0.4 * t);
+    setLower(h.armR, -0.4 * t);
     return;
   }
 
@@ -141,21 +163,29 @@ export function animateHumanoid(h, dt, speed01, stance, dyingT = -1) {
     h.torso.rotation.x = (Math.PI / 2) * 0.86;
     h.group.rotation.x = 0;
     h.legL.rotation.x = 0.2; h.legR.rotation.x = 0.05;
+    setLower(h.legL, 0.15); setLower(h.legR, 0.05);
     h.armL.rotation.x = -1.35; h.armR.rotation.x = -1.5;
+    setLower(h.armL, -0.7); setLower(h.armR, -0.9);
     h.head.rotation.x = -0.6;
     return;
   }
-  h.torso.rotation.x = 0;
+  h.torso.rotation.x = speed01 * 0.07;
   h.head.rotation.x = 0;
 
   h.legL.rotation.x = swing * (stance === 1 ? 0.6 : 1);
   h.legR.rotation.x = -swing * (stance === 1 ? 0.6 : 1);
+  const crouchMul = stance === 1 ? 1.5 : 1;
+  setLower(h.legL, Math.max(0.04, -swing + Math.abs(swing) * 0.3) * (0.5 + speed01 * 0.7) * crouchMul);
+  setLower(h.legR, Math.max(0.04, swing + Math.abs(swing) * 0.3) * (0.5 + speed01 * 0.7) * crouchMul);
   h.hips.position.y += lift * (stance === 1 ? 0.3 : 1);
   h.armL.rotation.x = -swing * 0.7;
+  setLower(h.armL, -0.28 - Math.abs(swing) * 0.2);
   if (h.rifle) {
     h.armR.rotation.x = -0.9 - swing * 0.25;
+    setLower(h.armR, -0.9);
   } else {
     h.armR.rotation.x = swing * 0.7;
+    setLower(h.armR, -0.28 - Math.abs(swing) * 0.2);
   }
   h.torso.rotation.z = Math.sin(h.phase) * 0.03 * speed01;
   h.group.rotation.x = 0;

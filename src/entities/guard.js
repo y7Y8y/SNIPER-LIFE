@@ -131,7 +131,7 @@ export class Guard {
       this.senseTimer = 0.22;
       const vis = this.visibilityOf(player, weather);
       if (vis > 0) {
-        this.alert = clamp(this.alert + vis * dt * 8 * this.senseSpeed, 0, 1.4);
+        this.alert = clamp(this.alert + vis * dt * 4.2 * this.senseSpeed, 0, 1.4);
         this.lastKnown = { x: player.x, z: player.z };
       } else {
         this.alert = clamp(this.alert - dt * 0.05, 0, 1.4);
@@ -203,14 +203,16 @@ export class Guard {
       case GState.COMBAT: {
         const p = this.lastKnown;
         this.speed01 = 0;
+        const sees = this.visibilityOf(player, weather) > 0.02;
+        this.aimTime = sees ? (this.aimTime ?? 0) + dt : Math.max(0, (this.aimTime ?? 0) - dt * 2);
         if (p) {
           const d = Math.hypot(p.x - this.x, p.z - this.z);
           this.faceToward(p.x, p.z, dt, 3.5);
           if (d > this.combatRange) {
             this.walkToward(p.x - this.x, p.z - this.z, dt, this.speedHunt);
           }
-          // riposte diminuee : distance, mouvement du joueur, meteo
-          if (this.shootCooldown <= 0 && player.alive) {
+          // riposte : ligne de vue + delai de visee + distance + mouvement + meteo
+          if (this.shootCooldown <= 0 && player.alive && sees && (this.aimTime ?? 0) > 0.85) {
             const pv = player.currentSpeed01;
             let hitChance = this.accuracy * (1 - d / 70) - pv * 0.12;
             if (player.stance === 2) hitChance *= 0.5;
